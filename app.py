@@ -24,6 +24,14 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("📞 **İletişim:** 0212 555 55 55")
     st.markdown("📍 **Adres:** Şişli / İstanbul")
+    
+    # --- API Key Girişi (Eğer .env yoksa) ---
+    api_key_input = None
+    if not os.getenv("OPENAI_API_KEY"):
+        st.warning("⚠️ API Anahtarı Bulunamadı")
+        api_key_input = st.text_input("OpenAI API Anahtarı Girin:", type="password", key="api_key_input")
+        if not api_key_input:
+            st.stop() # Anahtar girilmeden devam etme
 
 # --- Ana Ekran ---
 st.title("🦷 Online Randevu Asistanı")
@@ -53,7 +61,8 @@ if prompt := st.chat_input("Mesajınızı buraya yazın..."):
         # Düşünme efekti
         with st.spinner('Yapay zeka düşünüyor...'):
             time.sleep(1) # Gerçekçi gecikme
-            response_text = get_bot_response(prompt)
+            # API Key'i fonksiyona gönder (Environment'tan yoksa Input'tan alır)
+            response_text = get_bot_response(prompt, api_key=api_key_input)
             
         # Yazı yazma efekti (Typewriter effect)
         for chunk in response_text.split():

@@ -6,15 +6,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # OpenAI Müşterisini Hazırla
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-def get_bot_response(user_input):
+def get_bot_response(user_input, api_key=None):
     """
     OpenAI GPT Modelini kullanarak akıllı cevap üretir.
     """
     try:
-        if not os.getenv("OPENAI_API_KEY") or "sk-..." in os.getenv("OPENAI_API_KEY"):
-            return "⚠️ OpenAI API Anahtarı bulunamadı veya hatalı. Lütfen .env dosyasını kontrol edin."
+        # 1. API Anahtarını Belirle (Parametreden gelmezse .env'den al)
+        final_api_key = api_key if api_key else os.getenv("OPENAI_API_KEY")
+
+        # 2. Anahtar Kontrolü
+        if not final_api_key or "sk-" not in final_api_key:
+            return "⚠️ OpenAI API Anahtarı bulunamadı! Lütfen sol taraftaki menüden anahtarınızı girin."
+
+        # 3. Müşteriyi (Client) Oluştur
+        client = OpenAI(api_key=final_api_key)
 
         system_prompt = """
         Sen 'Zafer Diş Kliniği'nin profesyonel, nazik ve yardımsever yapay zeka asistanısın.
