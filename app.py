@@ -1,5 +1,6 @@
 import streamlit as st
 import time
+import os
 from utils import get_bot_response
 
 # Sayfa Ayarları
