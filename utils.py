@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # OpenAI Müşterisini Hazırla
-def get_bot_response(user_input, api_key=None):
+def get_bot_response(user_input, system_prompt, api_key=None):
     """
     OpenAI GPT Modelini kullanarak akıllı cevap üretir.
     """
@@ -20,22 +20,6 @@ def get_bot_response(user_input, api_key=None):
 
         # 3. Müşteriyi (Client) Oluştur
         client = OpenAI(api_key=final_api_key)
-
-        system_prompt = """
-        Sen 'Zafer Diş Kliniği'nin profesyonel, nazik ve yardımsever yapay zeka asistanısın.
-        
-        Bilgiler:
-        - Doktor: Dr. Zafer Bey
-        - Konum: Şişli Merkez, İstanbul
-        - Muayene Ücreti: 1500 TL (Sabit)
-        - Çalışma Saatleri: Hafta içi 09:00 - 18:00
-        
-        Kurallar:
-        1. Asla kaba olma. Her zaman kibar ve çözüm odaklı ol.
-        2. Randevu saati sorulursa şu anki müsaitlik durumunu uydur (Örn: Yarın 14:00 ve 16:30 boş).
-        3. Tıbbi tavsiye verme. Sadece randevu ve genel bilgi ver. Semptom sorulursa "Doktor beyin görmesi lazım" de.
-        4. Cevapların kısa ve net olsun (maksimum 2-3 cümle).
-        """
 
         response = client.chat.completions.create(
             model="gpt-4o-mini", # Hızlı ve ucuz model

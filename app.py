@@ -4,27 +4,47 @@ import os
 from utils import get_bot_response
 
 # Sayfa Ayarları
+# --- AYARLAR (Bu kısmı müşteriye göre değiştir) ---
+COMPANY_NAME = "My AI Agency"
+BOT_NAME = "Asistan"
+PAGE_ICON = "🤖"
+SIDEBAR_ICON_URL = "https://cdn-icons-png.flaticon.com/512/4712/4712035.png"
+CONTACT_INFO = "iletisim@example.com"
+ADDRESS_INFO = "İstanbul, Türkiye"
+
+# Botun Kişiliği ve Bilgileri (Burayı müşterinin işine göre doldur)
+SYSTEM_PROMPT = f"""
+Sen '{COMPANY_NAME}' için çalışan profesyonel bir yapay zeka asistanısın.
+
+Kurallar:
+1. Müşterilere karşı her zaman nazik ve yardımsever ol.
+2. Hizmetlerimiz hakkında bilgi ver ve satışa yönlendir.
+3. Bilmediğin konularda 'Bu konuda yetkili biriyle görüşmenizi öneririm' de.
+4. Cevapların kısa, net ve profesyonel olsun.
+"""
+
+# Sayfa Ayarları
 st.set_page_config(
-    page_title="Zafer Diş Kliniği - AI Asistan",
-    page_icon="🦷",
+    page_title=f"{COMPANY_NAME} - AI Chatbot",
+    page_icon=PAGE_ICON,
     layout="centered"
 )
 
 # --- Sidebar (Yan Panel) ---
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/3063/3063176.png", width=100)
-    st.title("Zafer Diş Kliniği")
+    st.image(SIDEBAR_ICON_URL, width=100)
+    st.title(COMPANY_NAME)
     st.markdown("---")
-    st.info("**AI Asistan v1.0**")
-    st.write("Bu asistan randevu ayarlayabilir ve fiyat bilgisi verebilir.")
+    st.info(f"**{BOT_NAME} v1.0**")
+    st.write("7/24 Müşteri Hizmetleri ve Destek Asistanı.")
     
     if st.button("Sohbeti Temizle"):
         st.session_state.messages = []
         st.rerun()
 
     st.markdown("---")
-    st.markdown("📞 **İletişim:** 0212 555 55 55")
-    st.markdown("📍 **Adres:** Şişli / İstanbul")
+    st.markdown(f"📞 **İletişim:** {CONTACT_INFO}")
+    st.markdown(f"📍 **Adres:** {ADDRESS_INFO}")
     
     # --- API Key Girişi (Eğer .env yoksa) ---
     api_key_input = None
@@ -35,8 +55,8 @@ with st.sidebar:
             st.stop() # Anahtar girilmeden devam etme
 
 # --- Ana Ekran ---
-st.title("🦷 Online Randevu Asistanı")
-st.markdown("Merhaba, ben **Zafer AI**. Size nasıl yardımcı olabilirim?")
+st.title(f"{PAGE_ICON} {COMPANY_NAME} Asistanı")
+st.markdown(f"Merhaba, ben **{BOT_NAME}**. Size nasıl yardımcı olabilirim?")
 
 # 1. Session State (Hafıza) Başlatma
 if "messages" not in st.session_state:
@@ -62,8 +82,8 @@ if prompt := st.chat_input("Mesajınızı buraya yazın..."):
         # Düşünme efekti
         with st.spinner('Yapay zeka düşünüyor...'):
             time.sleep(1) # Gerçekçi gecikme
-            # API Key'i fonksiyona gönder (Environment'tan yoksa Input'tan alır)
-            response_text = get_bot_response(prompt, api_key=api_key_input)
+            # API Key'i ve System Prompt'u fonksiyona gönder
+            response_text = get_bot_response(prompt, SYSTEM_PROMPT, api_key=api_key_input)
             
         # Yazı yazma efekti (Typewriter effect)
         for chunk in response_text.split():
